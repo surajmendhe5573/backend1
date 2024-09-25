@@ -6,6 +6,11 @@ from .serializers import *
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+from rest_framework.generics import RetrieveAPIView
+from .models import *
+from .serializers import RoleMasterSerializer
+from rest_framework.permissions import IsAdminUser  # or custom permission class
+
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -37,12 +42,6 @@ class UserLoginView(generics.GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .models import RoleMaster
-from .serializers import RoleMasterSerializer
-from rest_framework.permissions import IsAdminUser  # or custom permission class
-
 class RoleMasterListView(generics.ListCreateAPIView):
     queryset = RoleMaster.objects.all()
     serializer_class = RoleMasterSerializer
@@ -62,10 +61,21 @@ class RoleMasterDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
+# User = get_user_model()
+
+# class UserListView(ListAPIView):
+#     # permission_classes = [AllowAny]
+#     queryset = User.objects.all()
+#     serializer_class = UserListSerializer
+#     permission_classes = [IsAuthenticated]  # You can restrict access to authenticated users only, or remove this if you want public access.
+
+
 User = get_user_model()
 
-class UserListView(ListAPIView):
-    permission_classes = [AllowAny]
-    queryset = User.objects.all()
+class UserDetailView(RetrieveAPIView):
     serializer_class = UserListSerializer
-    # permission_classes = [IsAuthenticated]  # You can restrict access to authenticated users only, or remove this if you want public access.
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access this view
+
+    def get_object(self):
+        # Return the currently authenticated user
+        return self.request.user
