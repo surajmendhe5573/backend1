@@ -52,3 +52,8 @@ class RoleMasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoleMaster
         fields = ['id', 'role_name', 'role_description', 'is_active']
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'phone', 'gender', 'role']

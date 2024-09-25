@@ -1,10 +1,11 @@
-# views.py
-
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import *
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -58,3 +59,13 @@ class RoleMasterDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = RoleMaster.objects.all()
     serializer_class = RoleMasterSerializer
     permission_classes = [IsAdminUser]  # Only admins can modify roles
+
+
+
+User = get_user_model()
+
+class UserListView(ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = User.objects.all()
+    serializer_class = UserListSerializer
+    # permission_classes = [IsAuthenticated]  # You can restrict access to authenticated users only, or remove this if you want public access.
